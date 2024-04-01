@@ -45,10 +45,10 @@ module.exports = {
                 }
             }
         */
-        /* EĞER login olan kullanıcı admin değilse post işleminde yetkileri false  
-        req.body.isStaff=false
-        req.body.isAdmin=false
-        */
+
+        req.body.isStaff = false;
+        req.body.isAdmin = false;
+
         const data = await User.create(req.body)
 
         res.status(201).send({
@@ -90,8 +90,13 @@ module.exports = {
                 }
             }
         */
+  
+        if (!req.user.isAdmin) {
+            delete req.body.isStaff
+            delete req.body.isAdmin
 
-        if (!req.user.isAdmin) req.params.id = req.user._id
+        }
+
         const data = await User.updateOne({ _id: req.params.id }, req.body, { runValidators: true })
 
         res.status(202).send({
