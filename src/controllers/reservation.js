@@ -84,6 +84,11 @@ module.exports = {
             }
         */
 
+        // if not admin, cannot change the userId of a reservation
+        if(!req.user.isAdmin) {
+            delete req.body.userId
+        };
+
         req.body.createdId = req.user._id;
         req.body.updatedId = req.user._id;
 
