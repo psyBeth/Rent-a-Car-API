@@ -1,6 +1,5 @@
 "use strict"
 /* ------------------------------------------------------- */
-// User Controller:
 
 const User = require('../models/user')
 
@@ -63,14 +62,7 @@ module.exports = {
             #swagger.tags = ["Users"]
             #swagger.summary = "Get Single User"
         */
-       
-        //? Yetkisiz kullanıcının başka bir kullanıcıyı yönetmesini engelle (sadece kendi verileri):
-        // if (!req.user.isAdmin) {
-        //     req.params.id = req.user.id
-        // }
-        // const data = await User.findOne({ _id: req.params.id })
 
-        //? Yetkisiz kullanıcının başka bir kullanıcıyı yönetmesini engelle (sadece kendi verileri):
         const id = req.user.isAdmin ? req.params.id : req.user.id
         const data = await User.findOne({ _id: id })
 
@@ -99,7 +91,6 @@ module.exports = {
             }
         */
 
-        //? Yetkisiz kullanıcının başka bir kullanıcıyı yönetmesini engelle (sadece kendi verileri):
         if (!req.user.isAdmin) req.params.id = req.user._id
         const data = await User.updateOne({ _id: req.params.id }, req.body, { runValidators: true })
 
