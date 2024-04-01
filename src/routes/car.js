@@ -11,13 +11,13 @@ const permissions = require('../middlewares/permissions');
 
 router.route('/')
     .get(car.list)
-    .post(car.create)
+    .post(permissions.isStaff, car.create)
 
 router.route('/:id')
     .get(car.read)
-    .put(car.update)
-    .patch(car.update)
-    .delete(car.delete)
+    .put(permissions.isStaff, car.update)
+    .patch(permissions.isStaff, car.update)
+    .delete(permissions.isAdmin, car.delete)
 
 /* ------------------------------------------------------- */
 module.exports = router;
