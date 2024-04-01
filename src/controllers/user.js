@@ -63,13 +63,13 @@ module.exports = {
             #swagger.summary = "Get Single User"
         */
 
-        let customFilter = {};
+        let customFilter = {_id: req.params.id};
 
         if(!req.user.isAdmin && !req.user.isStaff) {
             customFilter = {_id: req.user._id}
         };
 
-        const data = await User.findOne({ _id: req.params.id, ...customFilter });
+        const data = await User.findOne({...customFilter });
 
         res.status(200).send({
             error: false,
@@ -99,10 +99,15 @@ module.exports = {
         if (!req.user.isAdmin) {
             delete req.body.isStaff
             delete req.body.isAdmin
+        };
 
-        }
+        let customFilter = {_id: req.params.id};
 
-        const data = await User.updateOne({ _id: req.params.id }, req.body, { runValidators: true })
+        if(!req.user.isAdmin && !req.user.isStaff) {
+            customFilter = {_id: req.user._id}
+        };
+
+        const data = await User.updateOne({...customFilter}, req.body, { runValidators: true });
 
         res.status(202).send({
             error: false,
