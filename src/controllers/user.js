@@ -63,13 +63,18 @@ module.exports = {
             #swagger.summary = "Get Single User"
         */
 
-        const id = req.user.isAdmin ? req.params.id : req.user.id
-        const data = await User.findOne({ _id: id })
+        let customFilter = {};
+
+        if(!req.user.isAdmin && !req.user.isStaff) {
+            customFilter = {_id: req.user._id}
+        };
+
+        const data = await User.findOne({ _id: req.params.id, ...customFilter });
 
         res.status(200).send({
             error: false,
             data
-        })
+        });
 
     },
 
