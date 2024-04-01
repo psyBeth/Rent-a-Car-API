@@ -42,6 +42,9 @@ module.exports = {
             }
         */
 
+        req.body.createdId = req.user._id;
+        req.body.updatedId = req.user._id;
+
         const data = await Reservation.create(req.body)
 
         res.status(201).send({
@@ -75,6 +78,9 @@ module.exports = {
                 }
             }
         */
+
+        req.body.createdId = req.user._id;
+        req.body.updatedId = req.user._id;
 
         res.status(202).send({
             error: false,
