@@ -1,9 +1,11 @@
 "use strict"
 /* ------------------------------------------------------- */
-const router = require('express').Router()
+const router = require('express').Router();
 /* ------------------------------------------------------- */
 
-const car = require('../controllers/car')
+const car = require('../controllers/car');
+
+const permissions = require('../middlewares/permissions');
 
 // URL: /cars
 
@@ -18,4 +20,4 @@ router.route('/:id')
     .delete(car.delete)
 
 /* ------------------------------------------------------- */
-module.exports = router
+module.exports = router;
