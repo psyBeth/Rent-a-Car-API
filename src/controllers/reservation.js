@@ -20,7 +20,12 @@ module.exports = {
             `
         */
 
-        const data = await res.getModelList(Reservation)
+        const data = await res.getModelList(Reservation, {}, [
+            {path: 'userId', select: 'username firstName lastName'},
+            {path:'carId'},
+            {path: 'createdId', select: 'username'},
+            {path: 'updatedId', select: 'username'},
+        ]);
 
         res.status(200).send({
             error: false,
@@ -65,6 +70,13 @@ module.exports = {
             #swagger.summary = "Get Single Reservation"
         */
 
+        const data = await Reservation.findOne({_id: req.params.id}).populate([
+            {path: 'userId', select: 'username firstName lastName'},
+            {path:'carId'},
+            {path: 'createdId', select: 'username'},
+            {path: 'updatedId', select: 'username'},
+        ]);
+        
         res.status(200).send({
             error: false,
             data
@@ -90,14 +102,15 @@ module.exports = {
             delete req.body.userId
         };
 
-        req.body.createdId = req.user._id;
+        const data = await Reservation.updateOne({ _id: req.params.id }, req.body, { runValidators: true });
+
         req.body.updatedId = req.user._id;
 
         res.status(202).send({
             error: false,
             data,
             new: await Reservation.findOne({ _id: req.params.id })
-        })
+        });
 
     },
 

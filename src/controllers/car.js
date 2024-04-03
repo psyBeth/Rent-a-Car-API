@@ -22,13 +22,16 @@ module.exports = {
         // Do not list the unavailable cars;
         let customFilter = { isAvailable: true }
 
-        const data = await res.getModelList(Car, customFilter)
+        const data = await res.getModelList(Car, customFilter, [
+            {path: 'createdId', select: 'username'},
+            {path: 'updatedId', select: 'username'},
+        ]);
 
         res.status(200).send({
             error: false,
             details: await res.getModelListDetails(Car),
             data
-        })
+        });
     },
 
     create: async (req, res) => {
@@ -61,7 +64,10 @@ module.exports = {
             #swagger.summary = "Get Single Car"
         */
 
-        const data = await Car.findOne({ _id: req.params.id })
+        const data = await Car.findOne({ _id: req.params.id }).populate([
+            {path: 'createdId', select: 'username'},
+            {path: 'updatedId', select: 'username'},
+        ]);
 
         res.status(200).send({
             error: false,
