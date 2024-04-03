@@ -39,10 +39,13 @@ module.exports = {
                     { endDate: { $lt: getStartDate } }   // lt : <
                 ]
             }, { _id: 0, carId: 1 }).distinct('carId');
-            console.log(reservedCars);
+            // console.log(reservedCars);
 
             // add not in (nin) to filter object:
-            customFilter._id = { $nin: reservedCars };
+            if (reservedCars.length) {
+                customFilter._id = { $nin: reservedCars };
+            };
+            // console.log(customFilter);
 
         } else {
             req.errorStatusCode = 401;
