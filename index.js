@@ -1,4 +1,6 @@
 "use strict"
+
+// const { toUnicode, toASCII } = require('punycode');
 /* ---------------------------------------------------- */
 const express = require('express')
 const app = express()
@@ -22,6 +24,11 @@ const { dbConnection } = require('./src/configs/dbConnection')
 dbConnection()
 
 /* ------------------------------------------------------- */
+
+// const domain = 'example.com';
+// const asciiDomain = toASCII(domain);
+// console.log(asciiDomain); 
+
 // Middlewares:
 
 // Accept JSON:
