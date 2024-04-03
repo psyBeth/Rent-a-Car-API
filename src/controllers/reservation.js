@@ -20,16 +20,22 @@ module.exports = {
             `
         */
 
-        const data = await res.getModelList(Reservation, {}, [
-            {path: 'userId', select: 'username firstName lastName'},
-            {path:'carId'},
-            {path: 'createdId', select: 'username'},
-            {path: 'updatedId', select: 'username'},
+        // users can only list their own reservations
+        let customFilter = {}
+        if (!req.user.isAdmin && !req.user.isStaff) {
+            customFilter = { userId: req.user._id }
+        };
+
+        const data = await res.getModelList(Reservation, customFilter, [
+            { path: 'userId', select: 'username firstName lastName' },
+            { path: 'carId' },
+            { path: 'createdId', select: 'username' },
+            { path: 'updatedId', select: 'username' },
         ]);
 
         res.status(200).send({
             error: false,
-            details: await res.getModelListDetails(Reservation),
+            details: await res.getModelListDetails(Reservation, customFilter),
             data
         })
     },
@@ -48,7 +54,7 @@ module.exports = {
         */
 
         // if "not admin/staff" or if "UserId not submitted" get from req.user:
-        if ( (!req.user.isAdmin && !req.user.isStaff) || !req.body?.userId ) {
+        if ((!req.user.isAdmin && !req.user.isStaff) || !req.body?.userId) {
             req.body.userId = req.user._id
         };
 
@@ -70,13 +76,18 @@ module.exports = {
             #swagger.summary = "Get Single Reservation"
         */
 
-        const data = await Reservation.findOne({_id: req.params.id}).populate([
-            {path: 'userId', select: 'username firstName lastName'},
-            {path:'carId'},
-            {path: 'createdId', select: 'username'},
-            {path: 'updatedId', select: 'username'},
+        let customFilter = {}
+        if (!req.user.isAdmin && !req.user.isStaff) {
+            customFilter = { userId: req.user._id }
+        };
+
+        const data = await Reservation.findOne({ _id: req.params.id, ...customFilter }).populate([
+            { path: 'userId', select: 'username firstName lastName' },
+            { path: 'carId' },
+            { path: 'createdId', select: 'username' },
+            { path: 'updatedId', select: 'username' },
         ]);
-        
+
         res.status(200).send({
             error: false,
             data
@@ -98,7 +109,7 @@ module.exports = {
         */
 
         // if not admin, cannot change the userId of a reservation
-        if(!req.user.isAdmin) {
+        if (!req.user.isAdmin) {
             delete req.body.userId
         };
 
