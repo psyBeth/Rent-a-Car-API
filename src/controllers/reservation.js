@@ -42,11 +42,12 @@ module.exports = {
             }
         */
 
-        //TODO: this will be explained with a comment
+        // if "not admin/staff" or if "UserId not submitted" get from req.user:
         if ( (!req.user.isAdmin && !req.user.isStaff) || !req.body?.userId ) {
             req.body.userId = req.user._id
         };
 
+        // get createdId and updatedId data from req.user:
         req.body.createdId = req.user._id;
         req.body.updatedId = req.user._id;
 
