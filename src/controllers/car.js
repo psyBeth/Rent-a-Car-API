@@ -38,16 +38,20 @@ module.exports = {
                     { startDate: { $gt: getEndDate } },  // gt : >
                     { endDate: { $lt: getStartDate } }   // lt : <
                 ]
-            }).populate('carId');
+            }, { _id: 0, carId: 1 }).distinct('carId');
             console.log(reservedCars);
+
+            // add not in (nin) to filter object:
+            customFilter._id = { $nin: reservedCars };
 
         } else {
             req.errorStatusCode = 401;
-            throw new Error('startDate and endDtae queires are required.');
+            throw new Error('startDate and endDate queires are required.');
         };
 
         /* LIST WITH DATE */
 
+        // const data = await res.getModelList(Car, { _id: { $nin: ['carid12345667', 'carid12345667']} } )
         const data = await res.getModelList(Car, customFilter, [
             { path: 'createdId', select: 'username' },
             { path: 'updatedId', select: 'username' },
