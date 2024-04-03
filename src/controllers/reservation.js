@@ -66,11 +66,11 @@ module.exports = {
         // does the user have another reservation with conflicting dates?
         const userReservationInDates = await Reservation.findOne({
             userId: req.body.userId,
+            carId: req.body.carId, // a different car can be rented
             $nor: [
                 { startDate: { $gt: req.body.endDate } },  // gt : >
                 { endDate: { $lt: req.body.startDate } }   // lt : <
             ],
-
         });
         // console.log(userReservationInDates);
 
