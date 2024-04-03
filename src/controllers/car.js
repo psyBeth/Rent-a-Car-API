@@ -1,7 +1,8 @@
 "use strict"
 /* ------------------------------------------------------- */
 
-const Car = require('../models/car')
+const Car = require('../models/car');
+const Reservation = require('../models/reservation');
 
 module.exports = {
 
@@ -20,11 +21,36 @@ module.exports = {
             `
         */
         // Do not list the unavailable cars;
-        let customFilter = { isAvailable: true }
+        let customFilter = { isAvailable: true };
+
+        /* LIST WITH DATE */
+
+        // list by dateFilter:
+        // URL?startDate=2024-01-01&endDate=2024-01-10
+
+        const { startDate: getStartDate, endDate: getEndDate } = req.query;
+
+        if (getStartDate && getEndDate) {
+
+            // list the reserved cars on the specified dates
+            const reservedCars = await Reservation.find({
+                $nor: [
+                    { startDate: { $gt: getEndDate } },  // gt : >
+                    { endDate: { $lt: getStartDate } }   // lt : <
+                ]
+            }).populate('carId');
+            console.log(reservedCars);
+
+        } else {
+            req.errorStatusCode = 401;
+            throw new Error('startDate and endDtae queires are required.');
+        };
+
+        /* LIST WITH DATE */
 
         const data = await res.getModelList(Car, customFilter, [
-            {path: 'createdId', select: 'username'},
-            {path: 'updatedId', select: 'username'},
+            { path: 'createdId', select: 'username' },
+            { path: 'updatedId', select: 'username' },
         ]);
 
         res.status(200).send({
@@ -65,8 +91,8 @@ module.exports = {
         */
 
         const data = await Car.findOne({ _id: req.params.id }).populate([
-            {path: 'createdId', select: 'username'},
-            {path: 'updatedId', select: 'username'},
+            { path: 'createdId', select: 'username' },
+            { path: 'updatedId', select: 'username' },
         ]);
 
         res.status(200).send({
