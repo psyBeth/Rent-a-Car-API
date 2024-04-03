@@ -19,8 +19,10 @@ module.exports = {
                 </ul>
             `
         */
+        // Do not list the unavailable cars;
+        let customFilter = { isAvailable: true }
 
-        const data = await res.getModelList(Car)
+        const data = await res.getModelList(Car, customFilter)
 
         res.status(200).send({
             error: false,
